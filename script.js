@@ -23,6 +23,25 @@ const spinner = document.getElementById('loading-spinner');
 const feedback = document.getElementById('feedback-overlay');
 const cardContainer = document.querySelector('.card-container');
 
+// масив з якісними фотографіями справжніх людей
+const realFaces = [
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1554151228-14d9def656e4?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1548142813-c348350df52b?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=500&h=500&fit=crop"
+];
+
 function loadLeaderboard() {
     db.ref('ai_leaderboard').orderByChild('score').limitToLast(5).on('value', (snapshot) => {
         const lbList = document.getElementById('lb-list');
@@ -54,9 +73,9 @@ function getRandomImage() {
     if (isCurrentAI) {
         url = "https://thispersondoesnotexist.com/?v=" + new Date().getTime();
     } else {
-        let gender = Math.random() > 0.5 ? "men" : "women";
-        let id = Math.floor(Math.random() * 99);
-        url = `https://randomuser.me/api/portraits/${gender}/${id}.jpg`;
+        // вибираємо випадкове якісне фото з нашого масиву
+        const randomIndex = Math.floor(Math.random() * realFaces.length);
+        url = realFaces[randomIndex];
     }
 
     imgElement.src = url;
