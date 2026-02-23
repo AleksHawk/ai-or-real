@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ai or real</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database-compat.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app-wrapper">
+    <div id="ui-top">
+        <div class="score-text">score: <span id="score-val">0</span>/10</div>
+        <div class="round-text">round: <span id="round-val">1</span></div>
+    </div>
+
+    <div id="menu" class="overlay active">
+        <div class="leaderboard-box">
+            <h3>global top 5</h3>
+            <div id="lb-list">
+                <div class="lb-wait" id="text-lb-wait">firebase pending...</div>
+            </div>
+        </div>
+        
+        <h1 class="title">ai or real?</h1>
+        <p class="subtitle">can you spot the fake?</p>
+        
+        <div class="input-group">
+             <input type="text" id="player-name" placeholder="enter nickname" maxlength="12" autocomplete="off">
+        </div>
+       
+        <button id="btn-start" class="btn-primary">start game</button>
+    </div>
+
+    <div id="gameplay" class="hidden">
+        <div class="card-container">
+            <div id="loading-spinner">loading...</div>
+            <img id="main-image" src="" alt="guess the image" crossorigin="anonymous">
+            <div id="feedback-overlay"></div>
+        </div>
+        
+        <div class="controls">
+            <button id="btn-ai" class="btn-guess ai-btn">🤖 ai</button>
+            <button id="btn-human" class="btn-guess human-btn">🧑 real</button>
+        </div>
+    </div>
+
+    <div id="game-over" class="overlay hidden">
+        <h1>game over</h1>
+        <p class="result-text">you scored <span id="final-score">0</span> out of 10</p>
+        <p id="rank-message" class="subtitle"></p>
+        <div class="buttons">
+            <button id="btn-restart" class="btn-primary">play again</button>
+            <button id="btn-x" class="btn-secondary">share to x</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
