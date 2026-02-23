@@ -1,6 +1,5 @@
-// встав свої ключі від існуючого проекту firebase
 const firebaseConfig = {
-    apiKey: "ТВІЙ_КЛЮЧ",
+    apiKey: "AIzaSyBF9qulhD2vkXaVvFWCP9yUypIu3xJLmto",
     authDomain: "seismic-run-8368a.firebaseapp.com",
     databaseURL: "https://seismic-run-8368a-default-rtdb.firebaseio.com",
     projectId: "seismic-run-8368a",
@@ -47,17 +46,14 @@ function getRandomImage() {
     imgElement.style.display = 'none';
     spinner.style.display = 'block';
     feedback.style.display = 'none';
-    cardContainer.className = 'card-container';
+    cardContainer.classList.remove('correct', 'wrong');
 
-    // випадково вирішуємо чи це буде ai чи людина
     isCurrentAI = Math.random() > 0.5;
     
     let url = "";
     if (isCurrentAI) {
-        // нейромережа генерує нове обличчя кожну секунду
         url = "https://thispersondoesnotexist.com/?v=" + new Date().getTime();
     } else {
-        // база реальних людей
         let gender = Math.random() > 0.5 ? "men" : "women";
         let id = Math.floor(Math.random() * 99);
         url = `https://randomuser.me/api/portraits/${gender}/${id}.jpg`;
@@ -73,7 +69,6 @@ imgElement.onload = () => {
 };
 
 imgElement.onerror = () => {
-    // якщо картинка не завантажилась, пробуємо ще раз
     getRandomImage();
 };
 
@@ -85,7 +80,6 @@ function handleGuess(guessedAI) {
     if (isCorrect) currentScore++;
     
     document.getElementById('score-val').innerText = currentScore;
-    
     cardContainer.classList.add(isCorrect ? 'correct' : 'wrong');
 
     setTimeout(() => {
@@ -122,7 +116,6 @@ function endGame() {
     document.getElementById('game-over').classList.add('active');
     document.getElementById('final-score').innerText = currentScore;
 
-    // зберігаємо в нову гілку бази даних
     const userRef = db.ref('ai_leaderboard/' + playerName);
     userRef.once('value').then((snapshot) => {
         const oldScore = snapshot.val() ? snapshot.val().score : -1;
@@ -138,6 +131,6 @@ document.getElementById('btn-restart').onclick = () => {
 };
 
 document.getElementById('btn-x').onclick = () => {
-    const txt = encodeURIComponent(`i scored ${currentScore}/10 in the "ai or real" challenge! 🤖\ncan you spot the fake?\n\nplay here: https://alekshawk.github.io/ai-swipe/`);
+    const txt = encodeURIComponent(`i scored ${currentScore}/10 in the "ai or real" challenge! 🤖\ncan you spot the fake?\n\nplay here: https://alekshawk.github.io/ai-or-real/`);
     window.open(`https://twitter.com/intent/tweet?text=${txt}`, '_blank');
 };
