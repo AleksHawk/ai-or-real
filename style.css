@@ -6,7 +6,6 @@ body, html {
     overflow: hidden; touch-action: none; text-transform: lowercase;
 }
 
-/* Cyberpunk Background */
 .bg-effects {
     position: fixed; inset: 0;
     background: radial-gradient(circle at 50% 50%, #101020 0%, #020205 100%);
@@ -16,13 +15,13 @@ body, html {
 #app-wrapper {
     position: relative; width: 100%; max-width: 500px; height: 100%;
     background: rgba(10, 10, 15, 0.8); border: 1px solid rgba(0, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    box-sizing: border-box; display: flex; flex-direction: column; align-items: center;
+    backdrop-filter: blur(10px); box-sizing: border-box; 
+    display: flex; flex-direction: column; align-items: center;
 }
 
 #ui-top {
-    width: 100%; padding: 30px 20px; display: flex; justify-content: space-between;
-    box-sizing: border-box; z-index: 10; font-size: 14px; letter-spacing: 2px;
+    width: 100%; padding: 30px 20px 10px 20px; display: flex; justify-content: space-between;
+    box-sizing: border-box; z-index: 10; font-size: 16px; letter-spacing: 2px;
 }
 
 .score-text { color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
@@ -35,69 +34,85 @@ body, html {
 }
 
 .logo-container { margin-bottom: 20px; }
-.main-logo { width: 120px; filter: drop-shadow(0 0 10px #00ffff); }
+.main-logo { width: 140px; filter: drop-shadow(0 0 15px #00ffff); }
 
 .title { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin: 0; color: #00ffff; }
-.subtitle { color: #555; margin-bottom: 40px; font-size: 12px; letter-spacing: 3px; }
-
-input {
-    padding: 15px; border: 1px solid rgba(255, 0, 255, 0.5); border-radius: 5px;
-    background: rgba(255, 255, 255, 0.05); color: #fff; font-family: 'Orbitron';
-    font-size: 16px; text-align: center; width: 260px; outline: none;
-    margin-bottom: 30px; transition: 0.3s;
-}
-input:focus { border-color: #ff00ff; box-shadow: 0 0 20px rgba(255, 0, 255, 0.2); }
+.subtitle { color: #555; margin-bottom: 40px; font-size: 14px; letter-spacing: 2px; }
 
 button {
     padding: 18px 30px; border: none; font-family: 'Orbitron';
-    font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; width: 240px;
-    margin-bottom: 15px; letter-spacing: 2px; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; width: 240px;
+    margin-bottom: 15px; letter-spacing: 2px; border-radius: 8px;
 }
 
-.btn-primary { background: #00ffff; color: #000; }
+.btn-primary { background: #00ffff; color: #000; box-shadow: 0 0 15px rgba(0,255,255,0.4); }
 .btn-primary:hover { background: #fff; transform: scale(1.05); }
-.btn-secondary { background: transparent; border: 1px solid #fff; color: #fff; }
+.btn-secondary { background: transparent; border: 2px solid #00ffff; color: #00ffff; }
 
 .perle-footer {
-    position: absolute; bottom: 30px; font-size: 10px; color: #444; letter-spacing: 1px;
+    position: absolute; bottom: 30px; font-size: 11px; color: #666; letter-spacing: 1px;
 }
-.perle-footer a { color: #00ffff; text-decoration: none; font-weight: bold; }
+.perle-footer a { color: #00ffff; text-decoration: none; font-weight: bold; transition: 0.2s; }
+.perle-footer a:hover { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
 
-/* Gameplay Area */
 #gameplay {
     width: 100%; flex-grow: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
 }
 
+/* таймер */
+.timer-container {
+    width: 320px; height: 6px; background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px; margin-bottom: 25px; overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+.timer-bar {
+    height: 100%; width: 100%; background: #00ffff;
+    transition: width 1s linear, background-color 0.3s;
+    box-shadow: 0 0 10px #00ffff;
+}
+.timer-bar.warning { background: #ff4500; box-shadow: 0 0 10px #ff4500; }
+
+/* ефекти картки */
 .card-container {
     position: relative; width: 320px; height: 320px; 
-    border: 1px solid rgba(255, 255, 255, 0.1); background: #000;
+    border: 2px solid rgba(0, 255, 255, 0.3); background: #05050a;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 50px rgba(0,0,0,0.5); margin-bottom: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 40px;
+    border-radius: 15px; overflow: hidden; transition: 0.3s;
+    animation: float 4s ease-in-out infinite;
 }
 
-#main-image { width: 100%; height: 100%; object-fit: cover; display: none; }
-
-/* Cyber Effects */
-.scanline {
-    position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-    background: rgba(0, 255, 255, 0.5); box-shadow: 0 0 10px #00ffff;
-    z-index: 5; animation: scan 3s linear infinite;
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0, 255, 255, 0.15); }
+    100% { transform: translateY(0px); }
 }
-@keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px) rotate(-3deg); }
+    75% { transform: translateX(10px) rotate(3deg); }
+}
+.shake { animation: shake 0.4s ease-in-out; }
+
+#main-image { width: 100%; height: 100%; object-fit: cover; display: none; opacity: 0; transition: opacity 0.5s; }
+#main-image.loaded { opacity: 1; }
+#loading-spinner { color: #00ffff; animation: pulse 1s infinite alternate; font-size: 14px; letter-spacing: 2px; }
 
 .noise {
     position: absolute; inset: 0; pointer-events: none;
     background: url('https://media.giphy.com/media/oEI9uWUicG58Y/giphy.gif');
-    opacity: 0.05; z-index: 4;
+    opacity: 0.03; z-index: 4;
 }
 
 .controls { display: flex; gap: 15px; }
-.btn-guess { width: 140px; clip-path: none; border-radius: 5px; }
-.ai-btn { background: #000; border: 1px solid #ff00ff; color: #ff00ff; }
-.human-btn { background: #000; border: 1px solid #00ffff; color: #00ffff; }
+.btn-guess { width: 150px; border-radius: 8px; margin-bottom: 0; }
+.ai-btn { background: rgba(255,0,255,0.05); border: 2px solid #ff00ff; color: #ff00ff; }
+.human-btn { background: rgba(0,255,255,0.05); border: 2px solid #00ffff; color: #00ffff; }
+.ai-btn:hover { background: rgba(255,0,255,0.2); box-shadow: 0 0 20px rgba(255,0,255,0.4); }
+.human-btn:hover { background: rgba(0,255,255,0.2); box-shadow: 0 0 20px rgba(0,255,255,0.4); }
 
-.correct { border: 2px solid #00ff00 !important; box-shadow: 0 0 30px rgba(0, 255, 0, 0.3) !important; }
-.wrong { border: 2px solid #ff0000 !important; box-shadow: 0 0 30px rgba(255, 0, 0, 0.3) !important; }
-
+.correct { border: 2px solid #00ff00 !important; box-shadow: 0 0 40px rgba(0, 255, 0, 0.4) !important; }
+.wrong { border: 2px solid #ff0000 !important; box-shadow: 0 0 40px rgba(255, 0, 0, 0.4) !important; }
 .hidden { display: none !important; }
