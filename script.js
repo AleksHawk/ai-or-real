@@ -21,7 +21,7 @@
     const cardContainer = document.getElementById('main-card');
     const timerBar = document.getElementById('timer-bar');
 
-    // Аудіо Контекст для генерації звуків "на льоту" (без mp3 файлів)
+    // Аудіо Контекст для генерації звуків "на льоту"
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
     function playTone(freq, type, duration, vol=0.1) {
@@ -45,7 +45,6 @@
         win: () => { [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => setTimeout(() => playTone(f, 'square', 0.2, 0.1), i*150)); }
     };
 
-    // Розширена база реальних фото (можна додавати більше ID з Unsplash)
     const realFaces = [
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80",
@@ -111,7 +110,6 @@
         let url = "";
 
         if (isCurrentAI) {
-            // Додаємо випадковий параметр, щоб браузер не кешував картинку
             url = `https://thispersondoesnotexist.com/?v=${new Date().getTime()}_${Math.random()}`;
         } else {
             if (availableRealFaces.length === 0) {
@@ -119,15 +117,14 @@
             }
             const randomIndex = Math.floor(Math.random() * availableRealFaces.length);
             url = availableRealFaces[randomIndex];
-            availableRealFaces.splice(randomIndex, 1); // Видаляємо, щоб не повторювалось
+            availableRealFaces.splice(randomIndex, 1);
         }
 
         imgElement.src = url;
     }
 
-    // Обробка успішного завантаження
     imgElement.onload = () => {
-        imageRetries = 0; // скидаємо лічильник помилок
+        imageRetries = 0;
         spinner.style.display = 'none';
         imgElement.style.display = 'block';
         setTimeout(() => { imgElement.classList.add('loaded'); }, 50);
@@ -135,12 +132,9 @@
         startTimer();
     };
 
-    // Надійний захист від чорного екрану
     imgElement.onerror = () => {
         imageRetries++;
         if (imageRetries >= MAX_RETRIES) {
-            // Якщо не вийшло 3 рази, беремо гарантовано робоче фото для продовження гри
-            console.warn("API fails. Loading safe fallback image.");
             isCurrentAI = false;
             imgElement.src = "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80"; 
             imageRetries = 0;
@@ -157,7 +151,6 @@
         let isCorrect = false;
 
         if (guessedAI === null) {
-            // Час вийшов
             sounds.wrong();
             cardContainer.classList.add('wrong', 'shake');
         } else {
@@ -193,7 +186,6 @@
     document.getElementById('btn-human').onclick = () => handleGuess(false);
 
     document.getElementById('btn-start').onclick = () => {
-        // Отримуємо нікнейм або ставимо guest
         const inputVal = document.getElementById('nickname-input').value.trim();
         playerName = inputVal !== "" ? inputVal : "guest";
 
@@ -202,10 +194,7 @@
         document.getElementById('ui-top').classList.remove('hidden');
         document.getElementById('gameplay').classList.remove('hidden');
         
-        // Ініціалізуємо гру
-        currentScore = 0; 
-        currentRound = 1; 
-        availableRealFaces = [...realFaces];
+        currentScore = 0; currentRound = 1; availableRealFaces = [...realFaces];
         document.getElementById('score-val').innerText = "0";
         document.getElementById('round-val').innerText = "1";
         
@@ -239,6 +228,9 @@
             feedback.innerText = "you've been deceived by the matrix.";
             feedback.style.color = "#ff0055";
         }
+
+        // Малюємо банер
+        generateBanner(currentScore, playerName);
     }
 
     function triggerConfetti() {
@@ -261,6 +253,38 @@
         document.getElementById('game-over').classList.add('hidden');
         document.getElementById('menu').classList.remove('hidden');
         document.getElementById('menu').classList.add('active');
+    };
+
+    // --- ГЕНЕРАЦІЯ ТА ЗАВАНТАЖЕННЯ БАНЕРА ---
+    function generateBanner(score, player) {
+        const canvas = document.getElementById('share-canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.src = 'banner-template.png'; // Твій файл у GitHub
+        
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.textAlign = 'center';
+            
+            // Нікнейм
+            ctx.fillStyle = '#00ffff'; 
+            ctx.font = 'bold 50px Orbitron, sans-serif';
+            ctx.fillText(`OPERATOR: ${player}`, canvas.width / 2, canvas.height / 2 - 20);
+            
+            // Рахунок
+            ctx.fillStyle = '#ff00ff'; 
+            ctx.font = '900 80px Orbitron, sans-serif';
+            ctx.fillText(`SCORE: ${score}/10`, canvas.width / 2, canvas.height / 2 + 70);
+        };
+    }
+
+    document.getElementById('btn-download').onclick = () => {
+        const canvas = document.getElementById('share-canvas');
+        const link = document.createElement('a');
+        link.download = `perle-result-${playerName}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
     };
 
     document.getElementById('btn-x').onclick = () => {
