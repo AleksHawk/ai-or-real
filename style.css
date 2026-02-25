@@ -33,34 +33,46 @@ body, html {
     z-index: 100; padding: 20px; box-sizing: border-box; text-align: center;
 }
 
-.logo-container { margin-bottom: 20px; }
+.logo-container { margin-bottom: 20px; min-height: 60px; }
 .main-logo { width: 140px; filter: drop-shadow(0 0 15px #00ffff); }
 
-.title { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin: 0; color: #00ffff; }
-.subtitle { color: #555; margin-bottom: 40px; font-size: 14px; letter-spacing: 2px; }
+.title { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin: 0; color: #00ffff; text-shadow: 0 0 20px rgba(0,255,255,0.4); }
+.subtitle { color: #888; margin-bottom: 20px; font-size: 14px; letter-spacing: 2px; }
+.feedback-text { color: #fff; margin-bottom: 30px; font-size: 16px; font-style: italic; }
+
+.input-field {
+    background: rgba(0, 255, 255, 0.05); border: 2px solid #00ffff;
+    color: #fff; font-family: 'Orbitron', sans-serif; font-size: 16px;
+    padding: 15px; width: 240px; margin-bottom: 25px; border-radius: 8px;
+    text-align: center; outline: none; transition: 0.3s; box-sizing: border-box;
+}
+.input-field:focus { box-shadow: 0 0 15px rgba(0,255,255,0.5); background: rgba(0, 255, 255, 0.1); }
 
 button {
     padding: 18px 30px; border: none; font-family: 'Orbitron';
-    font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; width: 240px;
+    font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 240px;
     margin-bottom: 15px; letter-spacing: 2px; border-radius: 8px;
+}
+button:active { transform: scale(0.95) !important; }
+
+.pulse-anim { animation: pulseBtn 2s infinite; }
+@keyframes pulseBtn {
+    0% { box-shadow: 0 0 10px rgba(0,255,255,0.4); }
+    50% { box-shadow: 0 0 25px rgba(0,255,255,0.8); }
+    100% { box-shadow: 0 0 10px rgba(0,255,255,0.4); }
 }
 
 .btn-primary { background: #00ffff; color: #000; box-shadow: 0 0 15px rgba(0,255,255,0.4); }
 .btn-primary:hover { background: #fff; transform: scale(1.05); }
 .btn-secondary { background: transparent; border: 2px solid #00ffff; color: #00ffff; }
+.btn-secondary:hover { background: rgba(0,255,255,0.1); }
 
-.perle-footer {
-    position: absolute; bottom: 30px; font-size: 11px; color: #666; letter-spacing: 1px;
-}
+.perle-footer { position: absolute; bottom: 20px; font-size: 11px; color: #666; letter-spacing: 1px; }
 .perle-footer a { color: #00ffff; text-decoration: none; font-weight: bold; transition: 0.2s; }
 .perle-footer a:hover { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
 
-#gameplay {
-    width: 100%; flex-grow: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-}
+#gameplay { width: 100%; flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-/* таймер */
 .timer-container {
     width: 320px; height: 6px; background: rgba(255, 255, 255, 0.1);
     border-radius: 10px; margin-bottom: 25px; overflow: hidden;
@@ -68,12 +80,10 @@ button {
 }
 .timer-bar {
     height: 100%; width: 100%; background: #00ffff;
-    transition: width 1s linear, background-color 0.3s;
-    box-shadow: 0 0 10px #00ffff;
+    transition: width 1s linear, background-color 0.3s; box-shadow: 0 0 10px #00ffff;
 }
-.timer-bar.warning { background: #ff4500; box-shadow: 0 0 10px #ff4500; }
+.timer-bar.warning { background: #ff0055; box-shadow: 0 0 15px #ff0055; }
 
-/* ефекти картки */
 .card-container {
     position: relative; width: 320px; height: 320px; 
     border: 2px solid rgba(0, 255, 255, 0.3); background: #05050a;
@@ -84,9 +94,8 @@ button {
 }
 
 @keyframes float {
-    0% { transform: translateY(0px); }
+    0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0, 255, 255, 0.15); }
-    100% { transform: translateY(0px); }
 }
 
 @keyframes shake {
@@ -98,21 +107,23 @@ button {
 
 #main-image { width: 100%; height: 100%; object-fit: cover; display: none; opacity: 0; transition: opacity 0.5s; }
 #main-image.loaded { opacity: 1; }
-#loading-spinner { color: #00ffff; animation: pulse 1s infinite alternate; font-size: 14px; letter-spacing: 2px; }
+#loading-spinner { color: #00ffff; animation: pulseTxt 1s infinite alternate; font-size: 14px; letter-spacing: 2px; }
+
+@keyframes pulseTxt { from { opacity: 0.5; } to { opacity: 1; text-shadow: 0 0 10px #00ffff; } }
 
 .noise {
     position: absolute; inset: 0; pointer-events: none;
     background: url('https://media.giphy.com/media/oEI9uWUicG58Y/giphy.gif');
-    opacity: 0.03; z-index: 4;
+    opacity: 0.04; z-index: 4; mix-blend-mode: screen;
 }
 
 .controls { display: flex; gap: 15px; }
 .btn-guess { width: 150px; border-radius: 8px; margin-bottom: 0; }
 .ai-btn { background: rgba(255,0,255,0.05); border: 2px solid #ff00ff; color: #ff00ff; }
 .human-btn { background: rgba(0,255,255,0.05); border: 2px solid #00ffff; color: #00ffff; }
-.ai-btn:hover { background: rgba(255,0,255,0.2); box-shadow: 0 0 20px rgba(255,0,255,0.4); }
-.human-btn:hover { background: rgba(0,255,255,0.2); box-shadow: 0 0 20px rgba(0,255,255,0.4); }
+.ai-btn:hover { background: rgba(255,0,255,0.2); box-shadow: 0 0 20px rgba(255,0,255,0.4); transform: translateY(-3px); }
+.human-btn:hover { background: rgba(0,255,255,0.2); box-shadow: 0 0 20px rgba(0,255,255,0.4); transform: translateY(-3px); }
 
 .correct { border: 2px solid #00ff00 !important; box-shadow: 0 0 40px rgba(0, 255, 0, 0.4) !important; }
-.wrong { border: 2px solid #ff0000 !important; box-shadow: 0 0 40px rgba(255, 0, 0, 0.4) !important; }
+.wrong { border: 2px solid #ff0055 !important; box-shadow: 0 0 40px rgba(255, 0, 85, 0.4) !important; }
 .hidden { display: none !important; }
