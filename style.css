@@ -8,8 +8,18 @@ body, html {
 
 .bg-effects {
     position: fixed; inset: 0;
-    background: radial-gradient(circle at 50% 50%, #101020 0%, #020205 100%);
+    background-color: #020205;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
     z-index: -1;
+    animation: grid-move 15s linear infinite;
+}
+
+@keyframes grid-move {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(30px); }
 }
 
 #app-wrapper {
@@ -28,7 +38,7 @@ body, html {
 .round-text { color: #ff00ff; text-shadow: 0 0 10px rgba(255, 0, 255, 0.5); }
 
 .overlay {
-    position: absolute; inset: 0; background: #020205;
+    position: absolute; inset: 0; background: transparent;
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
     z-index: 100; padding: 20px; box-sizing: border-box; text-align: center;
 }
@@ -36,7 +46,20 @@ body, html {
 .logo-container { margin-bottom: 20px; min-height: 60px; }
 .main-logo { width: 140px; filter: drop-shadow(0 0 15px #00ffff); }
 
-.title { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin: 0; color: #00ffff; text-shadow: 0 0 20px rgba(0,255,255,0.4); }
+.title { 
+    font-size: 32px; font-weight: 900; letter-spacing: -1px; margin: 0; 
+    color: #00ffff; text-shadow: 0 0 20px rgba(0,255,255,0.4); 
+    animation: glitch 3s infinite;
+}
+
+@keyframes glitch {
+    0%, 100% { text-shadow: 0 0 20px rgba(0,255,255,0.4); transform: translate(0); }
+    92% { text-shadow: 0 0 20px rgba(0,255,255,0.4); transform: translate(0); }
+    94% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; transform: translate(-2px, 1px); }
+    96% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; transform: translate(2px, -1px); }
+    98% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; transform: translate(-2px, 1px); }
+}
+
 .subtitle { color: #888; margin-bottom: 20px; font-size: 14px; letter-spacing: 2px; }
 .feedback-text { color: #fff; margin-bottom: 30px; font-size: 16px; font-style: italic; }
 
@@ -105,7 +128,6 @@ button:active { transform: scale(0.95) !important; }
 }
 .shake { animation: shake 0.4s ease-in-out; }
 
-/* Виправив логіку показу картинки */
 #main-image { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s ease; position: absolute; z-index: 2; }
 #main-image.loaded { opacity: 1; }
 #loading-spinner { color: #00ffff; animation: pulseTxt 1s infinite alternate; font-size: 14px; letter-spacing: 2px; position: absolute; z-index: 1; }
