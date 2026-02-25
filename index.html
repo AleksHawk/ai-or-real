@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ai or real</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database-compat.js"></script>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI or REAL | Perle Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<div class="bg-effects"></div>
 
 <div id="app-wrapper">
     <div id="ui-top">
@@ -18,28 +18,30 @@
     </div>
 
     <div id="menu" class="overlay active">
-        <div class="leaderboard-box">
-            <h3>global top 5</h3>
-            <div id="lb-list">
-                <div class="lb-wait" id="text-lb-wait">firebase pending...</div>
-            </div>
+        <div class="logo-container">
+            <img src="logo.svg" alt="Perle Labs Logo" class="main-logo">
         </div>
         
         <h1 class="title">ai or real?</h1>
-        <p class="subtitle">can you spot the fake?</p>
+        <p class="subtitle">perle labs digital challenge</p>
         
         <div class="input-group">
              <input type="text" id="player-name" placeholder="enter nickname" maxlength="12" autocomplete="off">
         </div>
        
-        <button id="btn-start" class="btn-primary">start game</button>
+        <button id="btn-start" class="btn-primary">initiate test</button>
+
+        <div class="perle-footer">
+            made with love by <a href="https://x.com/hawk_tyt" target="_blank">hawk</a> for <a href="https://x.com/PerleLabs" target="_blank">perle community</a>
+        </div>
     </div>
 
     <div id="gameplay" class="hidden">
         <div class="card-container">
-            <div id="loading-spinner">loading...</div>
+            <div class="scanline"></div>
+            <div id="loading-spinner">analyzing...</div>
             <img id="main-image" src="" alt="guess the image">
-            <div id="feedback-overlay"></div>
+            <div class="noise"></div>
         </div>
         
         <div class="controls">
@@ -49,16 +51,16 @@
     </div>
 
     <div id="game-over" class="overlay hidden">
-        <h1>game over</h1>
-        <p class="result-text">you scored <span id="final-score">0</span> out of 10</p>
-        <p id="rank-message" class="subtitle"></p>
+        <h1 class="glitch" data-text="TEST COMPLETE">test complete</h1>
+        <p class="result-text">accuracy: <span id="final-score">0</span>/10</p>
+        
         <div class="buttons">
-            <button id="btn-restart" class="btn-primary">play again</button>
-            <button id="btn-x" class="btn-secondary">share to x</button>
+            <button id="btn-restart" class="btn-primary">retry test</button>
+            <button id="btn-x" class="btn-secondary">share result</button>
         </div>
     </div>
 </div>
 
-<script src="script.js?v=fix"></script>
+<script src="script.js"></script>
 </body>
 </html>
