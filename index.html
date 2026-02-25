@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI or REAL | Perle Edition</title>
+    <title>ai or real | perle edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,16 +19,12 @@
 
     <div id="menu" class="overlay active">
         <div class="logo-container">
-            <img src="logo.svg" alt="Perle Labs Logo" class="main-logo">
+            <img src="logo.svg" alt="perle labs logo" class="main-logo">
         </div>
         
         <h1 class="title">ai or real?</h1>
         <p class="subtitle">perle labs digital challenge</p>
         
-        <div class="input-group">
-             <input type="text" id="player-name" placeholder="enter nickname" maxlength="12" autocomplete="off">
-        </div>
-       
         <button id="btn-start" class="btn-primary">initiate test</button>
 
         <div class="perle-footer">
@@ -37,8 +33,11 @@
     </div>
 
     <div id="gameplay" class="hidden">
-        <div class="card-container">
-            <div class="scanline"></div>
+        <div class="timer-container">
+            <div id="timer-bar" class="timer-bar"></div>
+        </div>
+
+        <div class="card-container" id="main-card">
             <div id="loading-spinner">analyzing...</div>
             <img id="main-image" src="" alt="guess the image">
             <div class="noise"></div>
@@ -51,7 +50,7 @@
     </div>
 
     <div id="game-over" class="overlay hidden">
-        <h1 class="glitch" data-text="TEST COMPLETE">test complete</h1>
+        <h1 class="title">test complete</h1>
         <p class="result-text">accuracy: <span id="final-score">0</span>/10</p>
         
         <div class="buttons">
