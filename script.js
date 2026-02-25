@@ -8,34 +8,25 @@
     let isWaiting = false;
     let playerName = "guest";
     
-    // Таймер
     let timerInterval;
     let timeLeft = 10;
-    
-    // Змінні для обробки помилок зображень
-    let imageRetries = 0;
-    const MAX_RETRIES = 3;
 
     const imgElement = document.getElementById('main-image');
     const spinner = document.getElementById('loading-spinner');
     const cardContainer = document.getElementById('main-card');
     const timerBar = document.getElementById('timer-bar');
 
-    // Аудіо Контекст для генерації звуків "на льоту"
+    // Аудіо
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
     function playTone(freq, type, duration, vol=0.1) {
         if(audioCtx.state === 'suspended') audioCtx.resume();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = type; 
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
         gain.gain.setValueAtTime(vol, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-        osc.connect(gain); 
-        gain.connect(audioCtx.destination);
-        osc.start(); 
-        osc.stop(audioCtx.currentTime + duration);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
     }
 
     const sounds = {
@@ -45,30 +36,15 @@
         win: () => { [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => setTimeout(() => playTone(f, 'square', 0.2, 0.1), i*150)); }
     };
 
-    const realFaces = [
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80",
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80",
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80",
-        "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=600&q=80",
-        "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=600&q=80",
-        "https://images.unsplash.com/photo-1463453091185-61582044d556?w=600&q=80",
-        "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=600&q=80",
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80",
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80",
-        "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80",
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&q=80",
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80",
-        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&q=80",
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80",
-        "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=600&q=80",
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80",
-        "https://images.unsplash.com/photo-1554151228-14d9def656e4?w=600&q=80",
-        "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=600&q=80",
-        "https://images.unsplash.com/photo-1548142813-c348350df52b?w=600&q=80"
-    ];
+    // Велика база реальних фото (зашифрована через ID для швидкості)
+    const realPhotoIDs = "1507003211169-0a1dd7228f2d,1500648767791-00dcc994a43e,1472099645785-5658abf4ff4e,1506794778202-cad84cf45f1d,1527980965255-d3b416303d12,1504257432389-52343af06ae3,1463453091185-61582044d556,1552058544-f2b08422138a,1494790108377-be9c29b29330,1534528741775-53994a69daeb,1531746020798-e6953c6e8e04,1544005313-94ddf0286df2,1517841905240-472988babdf9,1524504388940-b1c1722653e1,1438761681033-6461ffad8d80,1544725176-7c40e5a71c5e,1580489944761-15a19d654956,1554151228-14d9def656e4,1488426862026-3ee34a7d66df,1548142813-c348350df52b,1508214751196-bcfd4ca60f91,1529626455594-4ff0802cfb7e,1499996865611-e408544d93ee,1546961329-78bef0414d7c,1513956589380-bad6acb9b9d4,1522075469751-3a6694fb2f61,1542909168-82c3e7fdca5c,1503443205850-c08e3182081c,1530268729831-4b0b9e170218,1545167622-3a6ac756afa4,1513252771233-aeb896173bc5,1521119989659-a83eee488004,1558222218-b7b54eede3f3,1535713875002-d1d0cf377fde,1509967419530-da38b4704bc0,1541647376-17ddecd16362,1520813792240-56fc4a3765a7,1508280756091-9dcfa2ceb10c,1544348817-5f2cf14b88c8,1502378735452-1981a8c08c4e".split(',');
+    
+    let activeRealQueue = [];
 
-    let availableRealFaces = [];
+    // Функція перемішування бази (щоб не було повторів)
+    function shuffleArray(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
 
     function startTimer() {
         clearInterval(timerInterval);
@@ -78,7 +54,6 @@
         timerInterval = setInterval(() => {
             timeLeft--;
             updateTimerUI();
-            
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
                 handleGuess(null);
@@ -88,18 +63,15 @@
 
     function updateTimerUI() {
         timerBar.style.width = (timeLeft / 10) * 100 + '%';
-        if (timeLeft <= 3) {
-            timerBar.classList.add('warning');
-        } else {
-            timerBar.classList.remove('warning');
-        }
+        timerBar.classList.toggle('warning', timeLeft <= 3);
     }
 
     function getRandomImage() {
         isWaiting = true;
+        
+        // Повністю прибираємо стару картинку плавно
         imgElement.classList.remove('loaded');
-        setTimeout(() => { imgElement.style.display = 'none'; }, 300);
-        spinner.style.display = 'block';
+        imgElement.src = ""; 
         cardContainer.classList.remove('correct', 'wrong', 'shake');
         
         clearInterval(timerInterval);
@@ -112,35 +84,31 @@
         if (isCurrentAI) {
             url = `https://thispersondoesnotexist.com/?v=${new Date().getTime()}_${Math.random()}`;
         } else {
-            if (availableRealFaces.length === 0) {
-                availableRealFaces = [...realFaces]; 
+            // Якщо колода реальних фото закінчилась, перемішуємо заново
+            if (activeRealQueue.length === 0) {
+                activeRealQueue = shuffleArray([...realPhotoIDs]);
             }
-            const randomIndex = Math.floor(Math.random() * availableRealFaces.length);
-            url = availableRealFaces[randomIndex];
-            availableRealFaces.splice(randomIndex, 1);
+            const id = activeRealQueue.pop(); // Беремо останнє фото з колоди
+            url = `https://images.unsplash.com/photo-${id}?w=600&h=600&fit=crop&q=80`;
         }
 
+        // Завантажуємо нове фото
         imgElement.src = url;
     }
 
+    // Тільки коли фото завантажилось, ми його показуємо
     imgElement.onload = () => {
-        imageRetries = 0;
-        spinner.style.display = 'none';
-        imgElement.style.display = 'block';
-        setTimeout(() => { imgElement.classList.add('loaded'); }, 50);
+        if (!imgElement.src || imgElement.src === window.location.href) return; // Захист від пустих src
+        imgElement.classList.add('loaded');
         isWaiting = false;
         startTimer();
     };
 
     imgElement.onerror = () => {
-        imageRetries++;
-        if (imageRetries >= MAX_RETRIES) {
-            isCurrentAI = false;
-            imgElement.src = "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80"; 
-            imageRetries = 0;
-        } else {
-            getRandomImage();
-        }
+        // Якщо AI генератор "впав", ми просто беремо реальне фото, щоб гра не зупинялась
+        isCurrentAI = false;
+        if (activeRealQueue.length === 0) activeRealQueue = shuffleArray([...realPhotoIDs]);
+        imgElement.src = `https://images.unsplash.com/photo-${activeRealQueue.pop()}?w=600&h=600&fit=crop&q=80`;
     };
 
     function handleGuess(guessedAI) {
@@ -178,9 +146,7 @@
         }, 1200);
     }
 
-    document.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('mousedown', sounds.click);
-    });
+    document.querySelectorAll('button').forEach(btn => btn.addEventListener('mousedown', sounds.click));
 
     document.getElementById('btn-ai').onclick = () => handleGuess(true);
     document.getElementById('btn-human').onclick = () => handleGuess(false);
@@ -194,11 +160,14 @@
         document.getElementById('ui-top').classList.remove('hidden');
         document.getElementById('gameplay').classList.remove('hidden');
         
-        currentScore = 0; currentRound = 1; availableRealFaces = [...realFaces];
+        currentScore = 0; currentRound = 1; 
         document.getElementById('score-val').innerText = "0";
         document.getElementById('round-val').innerText = "1";
         
         if(audioCtx.state === 'suspended') audioCtx.resume();
+        
+        // Готуємо першу колоду
+        activeRealQueue = shuffleArray([...realPhotoIDs]);
         getRandomImage();
     };
 
@@ -214,13 +183,11 @@
         if (currentScore === 10) {
             feedback.innerText = "flawless! you are a machine yourself.";
             feedback.style.color = "#00ff00";
-            sounds.win();
-            triggerConfetti();
+            sounds.win(); triggerConfetti();
         } else if (currentScore >= 7) {
             feedback.innerText = "impressive biological sensors.";
             feedback.style.color = "#00ffff";
-            sounds.win();
-            triggerConfetti();
+            sounds.win(); triggerConfetti();
         } else if (currentScore >= 4) {
             feedback.innerText = "not bad, but the ai is getting smarter.";
             feedback.style.color = "#ffaa00";
@@ -229,24 +196,20 @@
             feedback.style.color = "#ff0055";
         }
 
-        // Малюємо банер
+        // Генеруємо банер
         generateBanner(currentScore, playerName);
     }
 
     function triggerConfetti() {
         let duration = 3 * 1000;
-        let animationEnd = Date.now() + duration;
-        let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000, colors: ['#00ffff', '#ff00ff'] };
+        let end = Date.now() + duration;
+        let colors = ['#00ffff', '#ff00ff'];
 
-        function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-        let interval = setInterval(function() {
-            let timeLeft = animationEnd - Date.now();
-            if (timeLeft <= 0) { return clearInterval(interval); }
-            let particleCount = 50 * (timeLeft / duration);
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-        }, 250);
+        (function frame() {
+            confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: colors });
+            confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: colors });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        }());
     }
 
     document.getElementById('btn-restart').onclick = () => {
@@ -255,27 +218,37 @@
         document.getElementById('menu').classList.add('active');
     };
 
-    // --- ГЕНЕРАЦІЯ ТА ЗАВАНТАЖЕННЯ БАНЕРА ---
+    // --- БАНЕР ---
     function generateBanner(score, player) {
         const canvas = document.getElementById('share-canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
         img.crossOrigin = "Anonymous";
-        img.src = 'banner-template.png'; // Твій файл у GitHub
+        img.src = 'banner-template.png'; // Твій шаблон
         
         img.onload = () => {
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             ctx.textAlign = 'center';
             
+            // Всі тексти білі!
+            ctx.fillStyle = '#ffffff'; 
+            
             // Нікнейм
-            ctx.fillStyle = '#00ffff'; 
             ctx.font = 'bold 50px Orbitron, sans-serif';
-            ctx.fillText(`OPERATOR: ${player}`, canvas.width / 2, canvas.height / 2 - 20);
+            ctx.fillText(`OPERATOR: ${player}`, canvas.width / 2, canvas.height / 2 - 80);
             
             // Рахунок
-            ctx.fillStyle = '#ff00ff'; 
-            ctx.font = '900 80px Orbitron, sans-serif';
-            ctx.fillText(`SCORE: ${score}/10`, canvas.width / 2, canvas.height / 2 + 70);
+            ctx.font = '900 100px Orbitron, sans-serif';
+            ctx.fillText(`RESULT: ${score}/10`, canvas.width / 2, canvas.height / 2 + 20);
+
+            // Заклик
+            ctx.font = '400 35px Orbitron, sans-serif';
+            ctx.fillText(`test your skills in ai or real`, canvas.width / 2, canvas.height / 2 + 120);
+
+            // Футер
+            ctx.font = '300 25px Orbitron, sans-serif';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'; // Трохи прозорий білий для футера
+            ctx.fillText(`created by hawk with love for perle community`, canvas.width / 2, canvas.height - 40);
         };
     }
 
@@ -288,7 +261,9 @@
     };
 
     document.getElementById('btn-x').onclick = () => {
-        const txt = encodeURIComponent(`i spotted ${currentScore}/10 fake faces in the ai or real challenge! 🤖🎨\noperator: ${playerName}\n\ncan you beat me? play here: https://alekshawk.github.io/ai-or-real/`);
-        window.open(`https://twitter.com/intent/tweet?text=${txt}`, '_blank');
+        // Оновлений текст для X
+        const text = `operator ${playerName} just scored ${currentScore}/10 in the ai or real challenge! 🤖👁️\n\nare your biological sensors sharp enough? test your reality here:\nhttps://alekshawk.github.io/ai-or-real/\n\n@PerleLabs #PerleCommunity`;
+        const encodedText = encodeURIComponent(text);
+        window.open(`https://twitter.com/intent/tweet?text=${encodedText}`, '_blank');
     };
 })();
