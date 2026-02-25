@@ -111,11 +111,8 @@ button:active { transform: scale(0.95) !important; }
 
 @keyframes pulseTxt { from { opacity: 0.5; } to { opacity: 1; text-shadow: 0 0 10px #00ffff; } }
 
-.noise {
-    position: absolute; inset: 0; pointer-events: none;
-    background: url('https://media.giphy.com/media/oEI9uWUicG58Y/giphy.gif');
-    opacity: 0.04; z-index: 4; mix-blend-mode: screen;
-}
+/* Шум вимкнено */
+.noise { display: none; }
 
 .controls { display: flex; gap: 15px; }
 .btn-guess { width: 150px; border-radius: 8px; margin-bottom: 0; }
