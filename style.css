@@ -105,13 +105,13 @@ button:active { transform: scale(0.95) !important; }
 }
 .shake { animation: shake 0.4s ease-in-out; }
 
-#main-image { width: 100%; height: 100%; object-fit: cover; display: none; opacity: 0; transition: opacity 0.5s; }
+/* Виправив логіку показу картинки */
+#main-image { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s ease; position: absolute; z-index: 2; }
 #main-image.loaded { opacity: 1; }
-#loading-spinner { color: #00ffff; animation: pulseTxt 1s infinite alternate; font-size: 14px; letter-spacing: 2px; }
+#loading-spinner { color: #00ffff; animation: pulseTxt 1s infinite alternate; font-size: 14px; letter-spacing: 2px; position: absolute; z-index: 1; }
 
 @keyframes pulseTxt { from { opacity: 0.5; } to { opacity: 1; text-shadow: 0 0 10px #00ffff; } }
 
-/* Шум вимкнено */
 .noise { display: none; }
 
 .controls { display: flex; gap: 15px; }
